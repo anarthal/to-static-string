@@ -1,0 +1,20 @@
+{
+    "name": "tostr",
+    "version": "0.0.1",
+    "description": "to_string drop-in replacement using std::to_chars",
+    "license": "MIT",
+    "dependencies": [
+        {
+            "name": "vcpkg-cmake",
+            "host": true
+        },
+        {
+            "name": "vcpkg-cmake-config",
+            "host": true
+        },
+        {
+            "name": "catch2",
+            "host": true
+        }
+    ]
+}

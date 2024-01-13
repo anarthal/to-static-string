@@ -12,3 +12,4 @@ doc/html/
 compile_commands.json
 .cache/
 __build*__/
+vcpkg_installed/

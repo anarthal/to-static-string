@@ -14,7 +14,15 @@ project(to_static_string LANGUAGES CXX)
 # Library
 add_library(to_static_string INTERFACE)
 target_compile_features(to_static_string INTERFACE cxx_std_17)
+target_include_directories(to_static_string INTERFACE include)
+
 
 # Test
-add_executable(test test/test.cpp)
-target_link_libraries(test PRIVATE to_static_string)
+include(CTest)
+if (BUILD_TESTING)
+    find_package(Catch2 REQUIRED)
+    
+    add_executable(unit_test test/test.cpp)
+    target_link_libraries(unit_test PRIVATE to_static_string Catch2::Catch2WithMain)
+    
+endif()
