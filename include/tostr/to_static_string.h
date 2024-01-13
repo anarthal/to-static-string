@@ -66,10 +66,6 @@ constexpr std::size_t get_buffer_size() noexcept
             (std::max)(2, log10ceil(std::numeric_limits<T>::max_exponent10))
         );
     }
-    else
-    {
-        static_assert(false);
-    }
 }
 
 struct access
@@ -90,9 +86,10 @@ struct access
 template <class T, class Invoker, class... Args>
 constexpr auto to_static_string_impl(Invoker invoker, T value, Args... args)
 {
-    cstatic_string<get_buffer_size<T>()> buff;
+    constexpr std::size_t buffsz = get_buffer_size<T>();
+    cstatic_string<buffsz> buff;
     char* data = access::get_data(buff);
-    std::to_chars_result result = invoker(data, data + buff.size(), value, args...);
+    std::to_chars_result result = invoker(data, data + buffsz, value, args...);
     assert(result.ec == std::errc());
     access::set_size(buff, result.ptr - data);
     return buff;
@@ -117,7 +114,7 @@ public:
 template <class T, class = std::enable_if_t<std::is_integral_v<T> && !std::is_same_v<T, bool>>>
 TO_STATIC_STRING_CXX23_CONSTEXPR auto to_static_string(T int_value, int base = 10) noexcept
 {
-    return to_static_string_impl(
+    return detail::to_static_string_impl(
         [](char* beg, char* end, T val, int base) { return std::to_chars(beg, end, val, base); },
         int_value,
         base
@@ -127,7 +124,7 @@ TO_STATIC_STRING_CXX23_CONSTEXPR auto to_static_string(T int_value, int base = 1
 template <class T, class = std::enable_if_t<std::is_floating_point_v<T>>>
 TO_STATIC_STRING_CXX23_CONSTEXPR auto to_static_string(T float_value) noexcept
 {
-    return to_static_string_impl(
+    return detail::to_static_string_impl(
         [](char* beg, char* end, T val) { return std::to_chars(beg, end, val); },
         float_value
     );
@@ -136,7 +133,7 @@ TO_STATIC_STRING_CXX23_CONSTEXPR auto to_static_string(T float_value) noexcept
 template <class T, class = std::enable_if_t<std::is_floating_point_v<T>>>
 TO_STATIC_STRING_CXX23_CONSTEXPR auto to_static_string(T float_value, std::chars_format fmt) noexcept
 {
-    return to_static_string_impl(
+    return detail::to_static_string_impl(
         [](char* beg, char* end, T val, std::chars_format fmt) { return std::to_chars(beg, end, val, fmt); },
         float_value,
         fmt
@@ -150,7 +147,7 @@ TO_STATIC_STRING_CXX23_CONSTEXPR auto to_static_string(
     int precision
 ) noexcept
 {
-    return to_static_string_impl(
+    return detail::to_static_string_impl(
         [](char* beg, char* end, T val, std::chars_format fmt, int prec) {
             return std::to_chars(beg, end, val, fmt, prec);
         },
