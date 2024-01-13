@@ -56,7 +56,7 @@ constexpr std::size_t get_buffer_size() noexcept
 {
     if constexpr (std::is_integral_v<T>)
     {
-        return round_buffer_size(std::numeric_limits<T>::max_digits10 + 2);
+        return round_buffer_size(std::numeric_limits<T>::digits10 + 2);
     }
     else if constexpr (std::is_floating_point_v<T>)
     {

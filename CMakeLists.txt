@@ -21,8 +21,10 @@ target_include_directories(to_static_string INTERFACE include)
 include(CTest)
 if (BUILD_TESTING)
     find_package(Catch2 REQUIRED)
-    
     add_executable(unit_test test/test.cpp)
     target_link_libraries(unit_test PRIVATE to_static_string Catch2::Catch2WithMain)
-    
+
+    find_package(benchmark REQUIRED)
+    add_executable(bench bench/bench.cpp)
+    target_link_libraries(bench PRIVATE to_static_string benchmark::benchmark)
 endif()
