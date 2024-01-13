@@ -1,0 +1,14 @@
+/__build/
+.cproject
+.project
+.settings/
+.pydevproject
+/private/
+CMakeSettings.json
+out/
+.vs/
+doc/html/
+.vscode/
+compile_commands.json
+.cache/
+__build*__/
